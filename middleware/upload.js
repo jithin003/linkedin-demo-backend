@@ -31,19 +31,29 @@ const storage = multer.diskStorage({
 
 // File filter
 const fileFilter = (req, file, cb) => {
-    const allowedImageTypes = /jpeg|jpg|png|gif|webp/;
-    const allowedVideoTypes = /mp4|mov|avi|wmv|webm/;
+    const allowedImageTypes = /jpeg|jpg|png|gif|webp|bmp|svg/;
+    const allowedVideoTypes = /mp4|mov|avi|wmv|webm|flv|mkv/;
 
-    const extname = path.extname(file.originalname).toLowerCase();
-    const mimetype = file.mimetype;
+    const mimetype = file.mimetype.toLowerCase();
+    const extname = file.originalname ? path.extname(file.originalname).toLowerCase().slice(1) : '';
 
-    if (mimetype.startsWith('image/') && allowedImageTypes.test(extname.slice(1))) {
-        cb(null, true);
-    } else if (mimetype.startsWith('video/') && allowedVideoTypes.test(extname.slice(1))) {
-        cb(null, true);
-    } else {
-        cb(new Error('Invalid file type. Only images and videos are allowed.'));
+    // Check MIME type first (more reliable for web uploads)
+    if (mimetype.startsWith('image/')) {
+        // If it's an image MIME type, accept it
+        // Extension check is optional for web uploads
+        if (!extname || allowedImageTypes.test(extname)) {
+            return cb(null, true);
+        }
+    } else if (mimetype.startsWith('video/')) {
+        // If it's a video MIME type, accept it
+        // Extension check is optional for web uploads
+        if (!extname || allowedVideoTypes.test(extname)) {
+            return cb(null, true);
+        }
     }
+
+    // Reject if not image or video
+    cb(new Error('Invalid file type. Only images and videos are allowed.'));
 };
 
 // Multer configuration
