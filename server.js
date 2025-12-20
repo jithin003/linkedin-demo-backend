@@ -25,6 +25,7 @@ const connectionRoutes = require('./routes/connection.routes');
 const messageRoutes = require('./routes/message.routes');
 const jobRoutes = require('./routes/job.routes');
 const notificationRoutes = require('./routes/notification.routes');
+const profileRoutes = require('./routes/profile.routes');
 
 // API routes
 app.use('/api/auth', authRoutes);
@@ -34,6 +35,7 @@ app.use('/api/connections', connectionRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/profile', profileRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
