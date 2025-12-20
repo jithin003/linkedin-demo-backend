@@ -16,7 +16,7 @@ const dbConfig = {
 // Add SSL configuration for Aiven (production)
 if (process.env.DB_SSL === 'true' || process.env.NODE_ENV === 'production') {
   dbConfig.ssl = {
-    rejectUnauthorized: true,
+    rejectUnauthorized: false, // Accept Aiven's self-signed certificates
   };
 }
 
