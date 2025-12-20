@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const profileController = require('../controllers/profile.controller');
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken, optionalAuth } = require('../middleware/auth');
 const { upload, handleMulterError } = require('../middleware/upload');
 
-// Get profile
-router.get('/:id?', profileController.getProfile);
+// Get profile (optional auth - can view others' profiles)
+router.get('/:id?', optionalAuth, profileController.getProfile);
 
 // Update profile (authenticated)
 router.put('/', authenticateToken, profileController.updateProfile);

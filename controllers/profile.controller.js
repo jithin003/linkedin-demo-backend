@@ -3,7 +3,11 @@ const db = require('../config/database');
 // Get user profile
 exports.getProfile = async (req, res) => {
     try {
-        const userId = req.params.id || req.user.id;
+        const userId = req.params.id || (req.user ? req.user.id : null);
+
+        if (!userId) {
+            return res.status(400).json({ success: false, message: 'User ID required' });
+        }
 
         // Get user basic info
         const [users] = await db.query(
