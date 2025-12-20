@@ -21,23 +21,41 @@ exports.getProfile = async (req, res) => {
 
         const user = users[0];
 
-        // Get skills
-        const [skills] = await db.query(
-            'SELECT id, skill_name FROM skills WHERE user_id = ? ORDER BY created_at DESC',
-            [userId]
-        );
+        // Get skills (handle if table doesn't exist)
+        let skills = [];
+        try {
+            const [skillsResult] = await db.query(
+                'SELECT id, skill_name FROM skills WHERE user_id = ? ORDER BY created_at DESC',
+                [userId]
+            );
+            skills = skillsResult;
+        } catch (error) {
+            console.log('Skills table not found or error:', error.message);
+        }
 
-        // Get experience
-        const [experience] = await db.query(
-            'SELECT * FROM experience WHERE user_id = ? ORDER BY is_current DESC, start_date DESC',
-            [userId]
-        );
+        // Get experience (handle if table doesn't exist)
+        let experience = [];
+        try {
+            const [expResult] = await db.query(
+                'SELECT * FROM experience WHERE user_id = ? ORDER BY is_current DESC, start_date DESC',
+                [userId]
+            );
+            experience = expResult;
+        } catch (error) {
+            console.log('Experience table not found or error:', error.message);
+        }
 
-        // Get education
-        const [education] = await db.query(
-            'SELECT * FROM education WHERE user_id = ? ORDER BY end_year DESC',
-            [userId]
-        );
+        // Get education (handle if table doesn't exist)
+        let education = [];
+        try {
+            const [eduResult] = await db.query(
+                'SELECT * FROM education WHERE user_id = ? ORDER BY end_year DESC',
+                [userId]
+            );
+            education = eduResult;
+        } catch (error) {
+            console.log('Education table not found or error:', error.message);
+        }
 
         res.json({
             success: true,
