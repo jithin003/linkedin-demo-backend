@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const profileController = require('../controllers/profile.controller');
-const { authenticate } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 const { upload, handleMulterError } = require('../middleware/upload');
 
 // Get profile

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jobsController = require('../controllers/jobs.controller');
-const { authenticate } = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 
 // Get jobs (public)
 router.get('/', jobsController.getJobs);
@@ -10,12 +10,12 @@ router.get('/', jobsController.getJobs);
 router.get('/search', jobsController.searchJobs);
 
 // Save job (authenticated)
-router.post('/save', authenticate, jobsController.saveJob);
+router.post('/save', authenticateToken, jobsController.saveJob);
 
 // Get saved jobs (authenticated)
-router.get('/saved', authenticate, jobsController.getSavedJobs);
+router.get('/saved', authenticateToken, jobsController.getSavedJobs);
 
 // Unsave job (authenticated)
-router.delete('/saved/:id', authenticate, jobsController.unsaveJob);
+router.delete('/saved/:id', authenticateToken, jobsController.unsaveJob);
 
 module.exports = router;
