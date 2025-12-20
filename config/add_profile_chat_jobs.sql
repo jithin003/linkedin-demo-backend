@@ -1,11 +1,41 @@
 -- Profile Extensions Migration
 -- Run this after the main schema.sql
+-- This script is safe to run multiple times
 
--- Add profile fields to users table
-ALTER TABLE users ADD COLUMN IF NOT EXISTS bio TEXT;
-ALTER TABLE users ADD COLUMN IF NOT EXISTS headline VARCHAR(255);
-ALTER TABLE users ADD COLUMN IF NOT EXISTS location VARCHAR(255);
-ALTER TABLE users ADD COLUMN IF NOT EXISTS cover_image VARCHAR(255);
+-- Add profile fields to users table only if they don't exist
+-- We'll use a procedure to safely add columns
+
+DELIMITER $$
+
+CREATE PROCEDURE AddColumnIfNotExists(
+    IN tableName VARCHAR(255),
+    IN columnName VARCHAR(255),
+    IN columnDefinition VARCHAR(255)
+)
+BEGIN
+    IF NOT EXISTS (
+        SELECT * FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE()
+        AND TABLE_NAME = tableName
+        AND COLUMN_NAME = columnName
+    ) THEN
+        SET @sql = CONCAT('ALTER TABLE ', tableName, ' ADD COLUMN ', columnName, ' ', columnDefinition);
+        PREPARE stmt FROM @sql;
+        EXECUTE stmt;
+        DEALLOCATE PREPARE stmt;
+    END IF;
+END$$
+
+DELIMITER ;
+
+-- Add columns safely
+CALL AddColumnIfNotExists('users', 'bio', 'TEXT');
+CALL AddColumnIfNotExists('users', 'headline', 'VARCHAR(255)');
+CALL AddColumnIfNotExists('users', 'location', 'VARCHAR(255)');
+CALL AddColumnIfNotExists('users', 'cover_image', 'VARCHAR(255)');
+
+-- Drop the procedure
+DROP PROCEDURE IF EXISTS AddColumnIfNotExists;
 
 -- Skills table
 CREATE TABLE IF NOT EXISTS skills (
