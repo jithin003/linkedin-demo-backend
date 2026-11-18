@@ -7,8 +7,14 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
+// Frontend origin(s). The web app is served from socioapp.techiesofepi.com.
+const FRONTEND_ORIGINS = ['https://socioapp.techiesofepi.com'];
+const envOrigins = process.env.SOCKET_IO_CORS_ORIGIN
+    ? process.env.SOCKET_IO_CORS_ORIGIN.split(',').map((o) => o.trim()).filter(Boolean)
+    : null;
+
 app.use(cors({
-    origin: process.env.SOCKET_IO_CORS_ORIGIN?.split(',') || '*',
+    origin: envOrigins ? [...new Set([...envOrigins, ...FRONTEND_ORIGINS])] : '*',
     credentials: true
 }));
 app.use(express.json());
@@ -41,7 +47,7 @@ app.use('/api/profile', profileRoutes);
 app.get('/health', (req, res) => {
     res.json({
         success: true,
-        message: 'LinkedIn API is running',
+        message: 'TechiesConnect demo API is running',
         timestamp: new Date().toISOString()
     });
 });
@@ -50,7 +56,8 @@ app.get('/health', (req, res) => {
 app.get('/', (req, res) => {
     res.json({
         success: true,
-        message: 'Welcome to LinkedIn API',
+        message: 'Welcome to the TechiesConnect demo API',
+        notice: 'Independent demo/portfolio project. Not affiliated with LinkedIn.',
         version: '1.0.0',
         endpoints: {
             auth: '/api/auth',
@@ -84,7 +91,7 @@ app.use((err, req, res, next) => {
 // Start server
 app.listen(PORT, () => {
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log('🚀 LinkedIn API Server Started');
+    console.log('🚀 TechiesConnect demo API started');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log(`📡 Server running on port ${PORT}`);
     console.log(`🌐 API URL: http://localhost:${PORT}`);

@@ -1,7 +1,7 @@
 {
   "name": "linkedin-backend",
   "version": "1.0.0",
-  "description": "LinkedIn replica backend API",
+  "description": "TechiesConnect demo backend API (not affiliated with LinkedIn)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -9,7 +9,6 @@
     "init-db": "node config/initDatabase.js"
   },
   "keywords": [
-    "linkedin",
     "social-network",
     "api"
   ],
